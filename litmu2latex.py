@@ -11,21 +11,39 @@ class Visible:
     def __init__(self, text):
         self.text = text
 
+    def __str__(self):
+        return f"<Visible {self.text}>"
+
     def add(self, text):
         self.text += text
 
 class Heading(Visible):
-    pass
+
+    def __str__(self):
+        return f"<Heading {self.text}>"
 
 class Rubric(Visible):
-    pass
+
+    def __str__(self):
+        return f"<Rubric {self.text}>"
 
 class Verse(Visible):
 
-    def __init__(self, first, second=None, number=None):
+    def __init__(self, text, continuation=None, number=None, divided=False):
         self.number = number
-        self.text = first
-        self.second = second
+        self.text = text
+        self.divided = divided
+        self.continuation = continuation
+
+    def __str__(self):
+        return (f"<Verse {self.text} | {self.continuation}{' $' if self.divided else ''}>"
+                if self.continuation
+                else f"<Verse {self.text}{' $' if self.divided else ''}>")
+
+    def add(self, text):
+        if self.continuation is None:
+            self.continuation = []
+        self.continuation.append(text)
 
 class OrderOfService:
 
@@ -48,24 +66,22 @@ def blank(service, line):
     pass
 
 def heading(service, line, text):
-    print("heading", text)
     service.add(Heading(text))
 
 def rubric(service, line, text):
     service.add(Rubric(text))
 
 def verse_initial(service, line, verse_number, text):
-    print("verse_initial number", verse_number, "has text", text)
-    service.add(first=text, number=number)
+    service.add(Verse(text=text, number=verse_number))
 
 def verse_initial_divided(service, line, verse_number, text):
-    print("verse_initial number", verse_number, "has text", text, "and divider")
+    service.add(Verse(text=text, number=verse_number, divided=True))
 
 def verse_continuation(service, line, text):
-    print("verse_continuation text", text)
+    service.add_to_last(text)
 
 def verse_continuation_divided(service, line, text):
-    print("verse_continuation text", text, "and divider")
+    service.add_to_last(text)
 
 LINE_HANDLERS = [
     (r" *$", blank),
@@ -98,6 +114,8 @@ def litmu2latex_main(source, output=None, verbose=False):
                     break
             if not done:
                 print('Could not do anything with "%s"' % line)
+    for item in service.items:
+        print("  ", item)
 
 if __name__ == "__main__":
     litmu2latex_main(**get_args())
