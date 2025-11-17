@@ -6,6 +6,10 @@ import argparse
 import os
 import re
 
+import dobishem.storage as storage
+import expressionive
+from expressionive.expressionive import htmltags as T
+
 class Visible:
 
     def __init__(self, text):
@@ -59,6 +63,15 @@ class OrderOfService:
     def add_to_last(self, text):
         self.last().add(text)
 
+    def write_latex(self, outstream):
+        """Write this service as LaTeX."""
+        with open(out_file_name, 'w') as o:
+            o.write("\usepackage{book-of-common-prayer}\n")
+
+    def write_html(self, outstream):
+        """Write this service as HTML."""
+        pass
+
 def ignore(service, line):
     pass
 
@@ -101,9 +114,9 @@ def get_args():
     parser.add_argument("--verbose", "-v", action='store_true')
     return vars(parser.parse_args())
 
-def litmu2latex_main(source, output=None, verbose=False):
+def litmu_parse_file(filename):
     service = OrderOfService()
-    with open(source) as instream, open(output or os.path.splitext(source)[0] + ".tex", 'w') as outstream:
+    with open(filename) as instream:
         for line in instream:
             line = line.rstrip()
             done = False
@@ -114,8 +127,15 @@ def litmu2latex_main(source, output=None, verbose=False):
                     break
             if not done:
                 print('Could not do anything with "%s"' % line)
+
+def litmu_convert(source, output=None, verbose=False):
+    service = litmu_parse_file(source)
     for item in service.items:
         print("  ", item)
+    if output and output.endswith('.html'):
+        service.write_html(output or os.path.splitext(source)[0] + ".html")
+    else:
+        service.write_latex(output or os.path.splitext(source)[0] + ".tex")
 
 if __name__ == "__main__":
-    litmu2latex_main(**get_args())
+    litmu_convert(**get_args())
