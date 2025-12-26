@@ -1,0 +1,15 @@
+#!/usr/bin/guile \
+-e main -s
+!#
+
+(use-modules (ice-9 getopt-long))
+
+(define option-spec
+  '((version (single-char #\v) (value #f))
+    (help    (single-char #\h) (value #f))
+    (output  (single-char #\o) (value #o))))
+
+(define (main args)
+  (map (lambda (arg) (display arg) (display " "))
+       (cdr args))
+  (newline))

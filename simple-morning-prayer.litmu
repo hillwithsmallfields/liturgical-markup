@@ -1,0 +1,32 @@
+(service ((title en "Morning prayer"))
+
+(prose ((en "We adore you, most Holy Lord Jesus Christ, here and in all your churches throughout all the world, and we bless you, because, by your Holy Cross, you have redeemed the world.")))
+
+(vr ((en "O God, make speed to save us."))
+    ((en "O Lord, make haste to help us.")))
+
+(canticle (title (en "Benedictus"))
+          (as-canticle (bible "Luke 1:68--79")))
+
+(verse ((en "Glory to the Father and to the Son"
+            "and to the Holy Spirit;"
+            "as it was in the beginning is now"
+            "and shall be for ever. Amen.")))
+
+(psalm "19:12--14")
+
+(reading "Hosea 6:6")
+
+(reading "Micah 6:6--8")
+
+(reading (title (en "Summary of the Law"))
+         (bible "Mark 12:29--31"))
+
+(prose ((en "Lord, I am not worthy to receive you,"
+            "but speak the word only,"
+            "and I shall be healed.")))
+
+(verse ((title (en "The Lord's Prayer")))
+       (bible "Matthew 6:9--13"))
+
+(reading "Isaiah 58:6--8")
